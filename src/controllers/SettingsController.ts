@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { getCustomRepository } from "typeorm";
 import { SettingsRepository } from "../repositories/SettingsRepository";
 import { SettingsService } from "../services/SettingsService";
@@ -21,6 +21,23 @@ class SettingsController {
                 message: err.message,
             });
         }
+    }
+
+    async findByUsername(req: Request, res: Response){
+        const {username} = req.params;
+        const settingsService = new SettingsService();
+
+        const settings = await settingsService.findByUsername(username);
+        return response.json(settings);
+    }
+
+    async update(req: Request, res: Response){
+        const {username} = req.params;
+        const {chat} = req.body;
+        const settingsService = new SettingsService();
+
+        const settings = await settingsService.update(username,chat);
+        return response.json(settings);
     }
 }
 
