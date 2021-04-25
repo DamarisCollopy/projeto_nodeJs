@@ -10,6 +10,7 @@ interface IConnectionCreate {
 }
 
 class ConnectionService {
+    [x: string]: any;
     private connectionRepository: Repository<Connection>; 
 
     constructor(){
@@ -36,7 +37,25 @@ class ConnectionService {
       });
       return connection;
   }
-  
+    async findAllWithoutAdmin(){
+        const connection = await this.connectionRepository.find({
+            where : {admin_id:null},
+            relations : ["user"],
+        });
+        return connection;
+    }
+    async findBySockerId(socked_id:string){
+        const connection = await this.connectionRepository.findOne({
+            socked_id,
+        });
+        return connection;
+    }
+    async updateAdminId(user_id:string,admin_id:string){
+        const settings = await this.connectionRepository.createQueryBuilder()
+        .update(Connection).set({admin_id}).where("user_id=:user_id",{
+            user_id
+        }).execute
+    }
 }
 
 export { ConnectionService };

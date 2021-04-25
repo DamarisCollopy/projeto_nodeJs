@@ -2,6 +2,7 @@ import{io} from "../http";
 import{ConnectionService} from "../services/ConnectionService";
 import{UsersService} from "../services/UsersService";
 import{MessagesService} from "../services/MessagesService";
+import { Message } from "../entities/Message";
 
 interface IParams {
   text:string;
@@ -42,8 +43,39 @@ io.on("connect", (socket) => {
     await connectionService.create(connection);
     }
   }
-
-  
-    
+  await messageService.create({
+    text,
+    user_id,
   });
+  
+  const allMenssages = await messageService.listByUser(user_id);
+
+  socket.emit("client_list_all_messages", allMenssages);
+
+  const allUsers = await connectionService.findAllWithoutAdmin();
+  io.emit("admin_list_all_users", allUsers);
+       
+  });
+
+  socket.on("client_send_to_admin", async (params) => {
+    const {text,socket_admin_id} = params;
+
+    const socket_id = socket.id;
+    const {user_id} = await connectionService.findBySockerId(socket.id);
+    
+    
+    const message = await messageService.create({
+      text,
+      user_id,
+    });
+    io.to(socket_admin_id).emit("admin_receive_message", {
+      message,
+      socket_id,
+    })
+  });
+
+  socket.on("admin_user_in_support", async (params)=> {
+    const {user_id} = params;
+    await connectionService.updateAdminId(user_id, socket.id);
+  })
 });         
