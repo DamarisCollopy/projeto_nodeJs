@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
-    "typeorm": "ts-node-dev node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev node_modules/typeorm/cli.js",
+    "start": "npm run start"
   },
+  
   "keywords": [],
   "author": "Damaris Collopy",
   "license": "ISC",
@@ -18,7 +20,7 @@
     "scripts-dev": "^1.1.0",
     "socket.io": "^4.0.1",
     "socket.io-client": "^4.0.1",
-    "sqlite3": "^5.0.2",
+    "mysql":"2.18.1",
     "tsc-init": "^2.1.0",
     "typeorm": "^0.2.32",
     "uuid": "^8.3.2"
